@@ -2,7 +2,7 @@
  * @Author: Whzcorcd
  * @Date: 2020-06-12 14:22:01
  * @LastEditors: Wzhcorcd
- * @LastEditTime: 2020-06-12 17:10:27
+ * @LastEditTime: 2020-06-16 18:17:51
  * @Description: file content
  */
 const path = require('path')
@@ -15,37 +15,50 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = merge(common, {
   mode: 'development',
   output: {
-    filename: 'js/[name].[hash:8].bundle.js'
+    filename: 'js/[name].[hash:8].bundle.js',
   },
   module: {
     rules: [
       {
         test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader']
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
       },
       {
         test: /\.(sass|scss)$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
-      }
-    ]
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
+      },
+    ],
   },
   devServer: {
     contentBase: path.resolve(__dirname, '../dist'),
     open: true,
     port: 9000,
+    hot: true,
     compress: true,
-    hot: true
+    historyApiFallback: true,
+    proxy: {
+      // 代理
+      '/api': {
+        target:
+          'https://www.easy-mock.com/mock/5dff0acd5b188e66c6e07329/react-template',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/api': '' },
+      },
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: 'React template',
       template: 'public/index.html',
       inject: 'body',
-      hash: false
+      hash: false,
     }),
-    new webpack.HotModuleReplacementPlugin()
-  ]
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+  ],
 })

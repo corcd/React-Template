@@ -10,11 +10,31 @@
           "chrome": 67,
           "safari": "11.1"
         },
-        // 根据代码逻辑中用到的 ES6+语法进行方法的导入，而不是全部导入
+        // 根据代码逻辑中用到的 ES6+ 语法进行方法的导入，而不是全部导入
         "useBuiltIns": "usage",
         "corejs": 3
       }
     ],
     "@babel/preset-react"
+  ],
+  "plugins": [
+    "@babel/transform-runtime",
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    ["@babel/plugin-proposal-class-properties", {
+      "loose": true
+    }],
+    [
+      "import",
+      {
+        "libraryName": "antd",
+        "libraryDirectory": "es",
+        "style": "css" // `style: true` 会加载 less 文件
+      }
+    ]
   ]
 }

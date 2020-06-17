@@ -2,13 +2,14 @@
  * @Author: Whzcorcd
  * @Date: 2020-06-12 14:21:49
  * @LastEditors: Wzhcorcd
- * @LastEditTime: 2020-06-12 17:10:11
+ * @LastEditTime: 2020-06-17 15:31:30
  * @Description: file content
  */
 const merge = require('webpack-merge')
 const common = require('./webpack.common.config.js')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const PreloadWebpackPlugin = require('preload-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
@@ -18,7 +19,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 module.exports = merge(common, {
   mode: 'production',
   output: {
-    filename: 'js/[name].[chunkhash:8].bundle.js'
+    filename: 'js/[name].[chunkhash:8].bundle.js',
   },
   module: {
     rules: [
@@ -28,8 +29,8 @@ module.exports = merge(common, {
           MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader',
-          'less-loader'
-        ]
+          'less-loader',
+        ],
       },
       {
         test: /\.(sass|scss)$/,
@@ -37,14 +38,14 @@ module.exports = merge(common, {
           MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader',
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
-      }
-    ]
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -55,33 +56,40 @@ module.exports = merge(common, {
       inject: 'body',
       minify: {
         removeComments: true,
-        collapseWhitespace: true
-      }
+        collapseWhitespace: true,
+      },
+    }),
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      as: 'script',
+      include: 'asyncChunks',
+      fileBlacklist: [/\index.css|index.js|vendors.js/, /\.whatever/],
     }),
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*', '!js']
+      cleanOnceBeforeBuildPatterns: ['**/*', '!js'],
     }),
     new MiniCssExtractPlugin({
       filename: 'css/[name].[hash].css',
-      chunkFilename: 'css/[id].[hash].css'
-    })
+      chunkFilename: 'css/[id].[hash].css',
+    }),
   ],
   optimization: {
+    sideEffects: true, //配合 tree shaking
     minimize: true,
     minimizer: [
       new TerserPlugin({
         parallel: true,
         cache: true,
-        test: /\.js(\?.*)?$/i
+        test: /\.js(\?.*)?$/i,
       }),
       new OptimizeCssAssetsPlugin({
         assetNameRegExp: /\.css$/g,
         cssProcessor: require('cssnano'),
         cssProcessorPluginOptions: {
-          preset: ['default', { discardComments: { removeAll: true } }]
+          preset: ['default', { discardComments: { removeAll: true } }],
         },
-        canPrint: true
-      })
+        canPrint: true,
+      }),
     ],
     splitChunks: {
       chunks: 'all',
@@ -89,18 +97,25 @@ module.exports = merge(common, {
       maxSize: 0,
       minChunks: 1,
       cacheGroups: {
+        libs: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'chunk-libs',
+          priority: 3,
+          chunks: 'initial',
+        },
         framework: {
           test: 'framework',
           name: 'framework',
-          enforce: true
+          priority: 10,
+          enforce: true,
         },
         vendors: {
-          priority: -10,
           test: /node_modules/,
           name: 'vendor',
-          enforce: true
-        }
-      }
-    }
-  }
+          priority: -10,
+          enforce: true,
+        },
+      },
+    },
+  },
 })
