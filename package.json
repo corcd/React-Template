@@ -7,16 +7,16 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "webpack-dev-server --inline --config ./config/webpack.dev.config.js",
-    "build": "webpack --config ./config/webpack.prod.config.js"
+    "build": "webpack --config ./config/webpack.prod.config.js",
+    "test:watch": "test -- --watch"
   },
   "dependencies": {
     "antd": "^4.3.4",
     "axios": "^0.19.2",
     "core-js": "^3.3.2",
     "dayjs": "^1.8.28",
-    "prettier": "2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -35,6 +35,7 @@
     "@babel/preset-react": "^7.10.1",
     "autoprefixer": "^9.8.0",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.0.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-import": "^1.13.0",
     "clean-webpack-plugin": "^3.0.0",
@@ -52,6 +53,7 @@
     "happypack": "^5.0.1",
     "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.0.1",
     "less": "^3.11.3",
     "less-loader": "^6.1.1",
     "mini-css-extract-plugin": "^0.9.0",
@@ -60,6 +62,7 @@
     "postcss": "^7.0.32",
     "postcss-loader": "^3.0.0",
     "preload-webpack-plugin": "^3.0.0-beta.4",
+    "prettier": "^2.0.5",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^3.0.3",

@@ -2,14 +2,14 @@
  * @Author: Whzcorcd
  * @Date: 2020-06-12 14:31:01
  * @LastEditors: Wzhcorcd
- * @LastEditTime: 2020-06-17 17:13:07
+ * @LastEditTime: 2020-06-18 18:25:16
  * @Description: file content
  */
 
 import React from 'react'
 import ReactDom from 'react-dom'
-import Router from './routers'
-import configStore from './store'
+import AppRouter from '@/router'
+import configureStore from '@/store'
 import { Provider } from 'react-redux'
 import { ConfigProvider } from 'antd'
 
@@ -18,7 +18,9 @@ import zhCN from 'antd/es/locale/zh_CN'
 
 import 'dayjs/locale/zh-cn'
 
-import './styles/main.less'
+import 'antd/dist/antd.css'
+import '@/assets/styles/global.less'
+import './style.less'
 
 dayjs.locale('zh-cn')
 
@@ -27,7 +29,7 @@ const store = configureStore()
 const App = () => (
   <Provider store={store}>
     <ConfigProvider locale={zhCN}>
-      <Router />
+      <AppRouter />
     </ConfigProvider>
   </Provider>
 )
@@ -40,5 +42,6 @@ if (module.hot) {
     if (err) {
       console.error('module.hot, ', err)
     }
+    ReactDom.render(<App />, document.getElementById('root'))
   })
 }

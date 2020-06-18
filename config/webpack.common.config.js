@@ -2,12 +2,15 @@
  * @Author: Whzcorcd
  * @Date: 2020-06-12 14:04:19
  * @LastEditors: Wzhcorcd
- * @LastEditTime: 2020-06-17 15:29:38
+ * @LastEditTime: 2020-06-18 16:55:07
  * @Description: file content
  */
+'use strict'
+
 const path = require('path')
 const os = require('os')
 
+const webpack = require('webpack')
 const TimeFixPlugin = require('time-fix-plugin')
 const WebpackBar = require('webpackbar')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
@@ -26,16 +29,18 @@ module.exports = {
     path: path.resolve(__dirname, '../dist'),
   },
   resolve: {
+    extensions: ['.mjs', '.js', '.json', '.jsx'],
     alias: {
-      '@': path.join(__dirname, '../src'),
+      '@': path.join(__dirname, '..', 'src'),
     },
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules|bower_components)/,
         use: ['happypack/loader?id=happybabel'],
+        exclude: /(node_modules|bower_components)/,
+        include: [path.resolve(__dirname, '../src')],
       },
       {
         test: /\.(jpg|jpeg|png|gif)$/,
@@ -78,11 +83,7 @@ module.exports = {
     //     console.info(percentage, message, ...args)
     //   },
     // }),
-    new HardSourceWebpackPlugin({
-      info: {
-        level: 'warn',
-      },
-    }),
+    new HardSourceWebpackPlugin(),
     //开启 happypack 的线程池
     new HappyPack({
       id: 'happybabel',
@@ -90,6 +91,7 @@ module.exports = {
       threadPool: happyThreadPool,
       verbose: true,
     }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /dayjs$/),
   ],
   devtool: 'cheap-module-eval-source-map',
   optimization: {

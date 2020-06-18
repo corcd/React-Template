@@ -2,9 +2,11 @@
  * @Author: Whzcorcd
  * @Date: 2020-06-12 14:22:01
  * @LastEditors: Wzhcorcd
- * @LastEditTime: 2020-06-16 18:17:51
+ * @LastEditTime: 2020-06-18 16:52:59
  * @Description: file content
  */
+'use strict'
+
 const path = require('path')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.config.js')

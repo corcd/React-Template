@@ -5,6 +5,8 @@
  * @LastEditTime: 2020-06-17 15:31:30
  * @Description: file content
  */
+'use strict'
+
 const merge = require('webpack-merge')
 const common = require('./webpack.common.config.js')
 
